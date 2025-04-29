@@ -275,3 +275,10 @@
 2025-04-29 17:47:31 - INFO - Loading URL: https://langchain.com, Depth: 2
 2025-04-29 17:47:31 - INFO - Loading URL: https://blog.langchain.dev, Depth: 2
 2025-04-29 17:47:32 - INFO - Loading URL: https://www.youtube.com/@LangChain, Depth: 2
+2025-04-29 20:44:45 - INFO - json file loaded successfully from: anscombe.json
+2025-04-29 20:48:37 - INFO - json file loaded successfully from: anscombe.json
+2025-04-29 20:48:37 - INFO - Successfully preprocessed documents into 44 chunks.
+2025-04-29 20:49:31 - INFO - json file loaded successfully from: mnist_test.csv
+2025-04-29 20:49:32 - INFO - Successfully preprocessed documents into 19243 chunks.
+2025-04-29 20:50:03 - INFO - pdf file loaded successfully from: concepts.pdf
+2025-04-29 20:50:03 - INFO - Successfully preprocessed documents into 1464 chunks.
