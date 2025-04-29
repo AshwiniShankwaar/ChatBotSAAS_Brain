@@ -16,3 +16,5 @@ langchain_text_splitters
 langchain-google-vertexai
 langchain_pinecone
 jq
+pinecone
+rank_bm25

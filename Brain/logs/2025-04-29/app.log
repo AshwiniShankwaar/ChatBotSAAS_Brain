@@ -282,3 +282,8 @@
 2025-04-29 20:49:32 - INFO - Successfully preprocessed documents into 19243 chunks.
 2025-04-29 20:50:03 - INFO - pdf file loaded successfully from: concepts.pdf
 2025-04-29 20:50:03 - INFO - Successfully preprocessed documents into 1464 chunks.
+2025-04-29 22:25:26 - INFO - pdf file loaded successfully from: concepts.pdf
+2025-04-29 22:25:26 - INFO - Successfully preprocessed documents into 1464 chunks.
+2025-04-29 22:28:19 - INFO - pdf file loaded successfully from: concepts.pdf
+2025-04-29 22:28:19 - INFO - Successfully preprocessed documents into 1464 chunks.
+2025-04-29 22:28:30 - INFO - document embedded: 100 of dim: 768
