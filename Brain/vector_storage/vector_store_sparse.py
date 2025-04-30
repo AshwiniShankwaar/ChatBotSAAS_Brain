@@ -12,6 +12,9 @@ from Brain.vector_storage.pinecone_store import pinecone_db
 from rank_bm25 import BM25Okapi
 from Brain.Logger.logger import logger
 
+import json
+import os
+
 class vector_store_sparse(pinecone_db):
     def __init__(
             self,
@@ -52,7 +55,6 @@ class vector_store_sparse(pinecone_db):
             if score > 0:
                 sparse["indices"].append(int(idx))
                 sparse["values"].append(float(score))
-
         return sparse
 
     def save(self):
@@ -68,4 +70,24 @@ class vector_store_sparse(pinecone_db):
                 }
             })
         self.index.upsert(vectors=vectors, namespace=self.namespace)
+        self.save_bm25_model()
         logger.info(f"vector saved in index {self.index_name}")
+
+    def save_bm25_model(self):
+        """Save tokenized corpus as JSON inside the project root under /bm25model/{namespace}.json"""
+        # Get the root project directory (assumes this script runs from anywhere inside the project)
+        project_root = os.path.dirname(os.path.abspath(__file__))  # current file's dir
+        root_dir = os.path.abspath(os.path.join(project_root, "../../"))  # adjust as needed
+
+        bm25_dir = os.path.join(root_dir, "bm25model")
+        os.makedirs(bm25_dir, exist_ok=True)
+        logger.info(f"bm25model directory ensured at {bm25_dir}")
+
+        path = os.path.join(bm25_dir, f"{self.namespace}.json")
+
+        try:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(self.tokenized_corpus, f)
+            logger.info(f"BM25 model saved for namespace {self.namespace} at {path}")
+        except Exception as e:
+            logger.error(f"Error saving BM25 model: {e}")

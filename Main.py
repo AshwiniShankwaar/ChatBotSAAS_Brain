@@ -8,33 +8,37 @@ from Brain.embedding.haggingFaceEmbedding import perform_embedding_doc,perform_e
 from Brain.vector_storage import vector_store_dense,vector_store_sparse
 from pinecone import Pinecone
 from Brain.Logger.logger import logger
+from Brain.Retrival import retrival_doc
 load_dotenv()
 pine_api_key = os.getenv("PINECONE_API_KEY")
+pc = Pinecone(
+        api_key=pine_api_key
+    )
 
-if __name__ == '__main__':
-    #load document
-    #test for pdf loader
+index_name = "rag-application-kb"
+namespace = "concepts"
+def load_doc():
+    # load document
+    # test for pdf loader
     loader = DocumentLoader("./files/concepts.pdf")
     # loader = WebLoader("https://python.langchain.com/docs",True,2)
     doc = loader.load()
     # print(len(doc))
     logger.info("doc loaded")
-    #perform text_split
+
+def preprocess_doc():
+    # perform text_split
     # splitter = json_text_splitter(doc)
     splitter = char_text_splitter(doc)
     chunks = splitter.processDocumnet()[0:100]
-    #print(len(chunks))
+    # print(len(chunks))
     logger.info("chunks created")
+
+def perform_embedding():
     embedded_doc = perform_embedding_doc(chunks)
     print(f"embedded performed {len(embedded_doc)}, dimentions {len(embedded_doc[0])}")
 
-    pc = Pinecone(
-        api_key=pine_api_key
-    )
-
-    index_name = "rag-application-kb"
-    namespace = "concepts"
-
+def store_data():
     # Dense Vector Store
     dense_store = vector_store_dense(
         pc=pc,
@@ -54,5 +58,15 @@ if __name__ == '__main__':
     )
     sparse_store.save()
     logger.info("sparse data stored")
+
+def retriver(query:str):
+    res = retrival_doc(index_name, pc, query, 3, namespace)
+    print(res)
+
+if __name__ == '__main__':
+
+    print("Ask your question")
+    query = input()
+    retriver(query)
     pass
 
