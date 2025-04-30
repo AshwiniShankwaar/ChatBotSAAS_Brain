@@ -32,7 +32,7 @@ def preprocess_doc(doc):
     # perform text_split
     # splitter = json_text_splitter(doc)
     splitter = char_text_splitter(doc)
-    chunks = splitter.processDocumnet()[0:100]
+    chunks = splitter.processDocumnet()[0:200]
     # print(len(chunks))
     logger.info("chunks created")
     return chunks
@@ -72,10 +72,10 @@ def answer(query:str,res)->str:
     return answer
 
 if __name__ == '__main__':
-    # doc = load_doc()
-    # chunks = preprocess_doc(doc)
-    # embedded = perform_embedding(chunks)
-    # store_data(chunks,embedded)
+    doc = load_doc()
+    chunks = preprocess_doc(doc)
+    embedded = perform_embedding(chunks)
+    store_data(chunks,embedded)
     print("Ask your question")
     query = input()
     r_doc = retriver(query)

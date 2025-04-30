@@ -4,8 +4,8 @@ from Brain.Logger.logger import logger
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 class char_text_splitter(splitter):
     def __init__(self,document:list[Document],
-                        chunk_size:int=500,
-                        chunk_overlap:int=50,
+                        chunk_size:int=5000,
+                        chunk_overlap:int=500,
                         separator:list[str]=["\n\n", "\n", " ", ""]):
         self._doc = document
         self._chunk_size = chunk_size

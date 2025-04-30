@@ -4,7 +4,7 @@ from Brain.Logger.logger import logger
 from langchain_text_splitters import RecursiveJsonSplitter
 class json_text_splitter(splitter):
     def __init__(self,document:list[Document],
-                        chunk_size:int=500,
+                        chunk_size:int=2000,
                         ):
         self._doc = document
         self._chunk_size = chunk_size
