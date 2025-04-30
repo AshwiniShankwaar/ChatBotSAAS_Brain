@@ -9,6 +9,7 @@ from Brain.vector_storage import vector_store_dense,vector_store_sparse
 from pinecone import Pinecone
 from Brain.Logger.logger import logger
 from Brain.Retrival import retrival_doc
+from Brain.llm_struture import get_answer
 load_dotenv()
 pine_api_key = os.getenv("PINECONE_API_KEY")
 pc = Pinecone(
@@ -25,20 +26,23 @@ def load_doc():
     doc = loader.load()
     # print(len(doc))
     logger.info("doc loaded")
+    return doc
 
-def preprocess_doc():
+def preprocess_doc(doc):
     # perform text_split
     # splitter = json_text_splitter(doc)
     splitter = char_text_splitter(doc)
     chunks = splitter.processDocumnet()[0:100]
     # print(len(chunks))
     logger.info("chunks created")
+    return chunks
 
-def perform_embedding():
+def perform_embedding(chunks):
     embedded_doc = perform_embedding_doc(chunks)
     print(f"embedded performed {len(embedded_doc)}, dimentions {len(embedded_doc[0])}")
+    return embedded_doc
 
-def store_data():
+def store_data(chunks,embedded_doc):
     # Dense Vector Store
     dense_store = vector_store_dense(
         pc=pc,
@@ -60,13 +64,22 @@ def store_data():
     logger.info("sparse data stored")
 
 def retriver(query:str):
-    res = retrival_doc(index_name, pc, query, 3, namespace)
-    print(res)
+    res = retrival_doc(index_name, pc, query, 5, namespace)
+    return res
+
+def answer(query:str,res)->str:
+    answer = get_answer(query,res)
+    return answer
 
 if __name__ == '__main__':
-
+    # doc = load_doc()
+    # chunks = preprocess_doc(doc)
+    # embedded = perform_embedding(chunks)
+    # store_data(chunks,embedded)
     print("Ask your question")
     query = input()
-    retriver(query)
+    r_doc = retriver(query)
+    ans = answer(query,r_doc)
+    print(ans)
     pass
 
