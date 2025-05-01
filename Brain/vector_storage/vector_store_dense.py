@@ -1,4 +1,3 @@
-import datetime
 from pinecone import (
     Pinecone,
     ServerlessSpec,
@@ -9,7 +8,7 @@ from pinecone import (
 )
 from langchain_core.documents import Document
 from Brain.vector_storage.pinecone_store import pinecone_db
-from Brain.Logger.logger import logger
+from Logger import logger
 
 
 class vector_store_dense(pinecone_db):

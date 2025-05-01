@@ -18,3 +18,4 @@ langchain_pinecone
 jq
 pinecone
 rank_bm25
+fastapi

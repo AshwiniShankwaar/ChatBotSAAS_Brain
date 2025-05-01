@@ -1,16 +1,13 @@
 from pinecone import (
     Pinecone,
     ServerlessSpec,
-    CloudProvider,
-    AwsRegion,
     VectorType,
     DeletionProtection
 )
 from langchain_core.documents import Document
-from dotenv import load_dotenv
 from Brain.vector_storage.pinecone_store import pinecone_db
 from rank_bm25 import BM25Okapi
-from Brain.Logger.logger import logger
+from Logger import logger
 
 import json
 import os

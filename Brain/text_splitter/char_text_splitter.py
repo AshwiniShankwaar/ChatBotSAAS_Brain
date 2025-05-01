@@ -1,6 +1,6 @@
 from langchain_core.documents import Document
 from Brain.text_splitter.splitter import splitter
-from Brain.Logger.logger import logger
+from Logger import logger
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 class char_text_splitter(splitter):
     def __init__(self,document:list[Document],

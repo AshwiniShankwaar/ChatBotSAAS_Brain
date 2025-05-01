@@ -1,9 +1,9 @@
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin
 from langchain_core.documents import Document
 import requests
 from bs4 import BeautifulSoup
 from Brain.DataLoader.Loader import Loader
-from Brain.Logger.logger import logger
+from Logger import logger
 from Brain.Exceptions.lodderError import lodderError
 
 class WebLoader(Loader):

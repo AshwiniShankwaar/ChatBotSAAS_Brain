@@ -1,8 +1,7 @@
 import os
-import logging
 from Brain.DataLoader.Loader import Loader
 from Brain.Exceptions.lodderError import lodderError
-from Brain.Logger.logger import logger
+from Logger import logger
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, JSONLoader, CSVLoader
 

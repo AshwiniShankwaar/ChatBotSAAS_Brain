@@ -4,7 +4,7 @@ from datetime import datetime
 
 # ✅ Create logger folder with today's date (YYYY-MM-DD)
 today = datetime.now().strftime("%Y-%m-%d")
-log_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs", today))
+log_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../", "logs", today))
 os.makedirs(log_dir, exist_ok=True)
 log_file_path = os.path.join(log_dir, "app.log")
 
