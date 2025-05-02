@@ -1,11 +1,13 @@
 import json
 import os
 import shutil
+cwd = os.getcwd()
+abs_path = os.path.abspath(f"{cwd}/..")
 bash_path = "files"
 from Logger.logger import logger
 def save_data(client_id,chatbot_id,files,weblinks)->str:
     logger.info(f"creating temp folder for chatbot {chatbot_id}")
-    temp_dir = f"./{bash_path}/{client_id}_{chatbot_id}"
+    temp_dir = f"{abs_path}/{bash_path}/{client_id}_{chatbot_id}"
     os.makedirs(temp_dir, exist_ok=True)
     logger.info(f"temp folder created for chatbot {chatbot_id}, path: {temp_dir}")
 
