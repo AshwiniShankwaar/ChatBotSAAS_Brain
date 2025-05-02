@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import datetime
-from .ChatBot_Log_file_not_found import chatBotFileNotFoundError
+from Logger.logger_exception.ChatBot_Log_file_not_found import chatBotFileNotFoundError
 from Logger.logger import get_logger
 
 logger = get_logger()
