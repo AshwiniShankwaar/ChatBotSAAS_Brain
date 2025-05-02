@@ -21,9 +21,9 @@ async def create_chatbot(payload:ChatbotCreateRequest,
     try:
         result = create_chatbot_pipeline(payload,files_dir,botlogger)
         botlogger.info(f"chatbot {payload.chatbot_name}"
-                    f"of client {payload.client_id}"
-                    f"is created and the namespace is"
-                    f"{result}")
+                    f" of client {payload.client_id}"
+                    f" is created and the namespace is"
+                    f" {result}")
         clean_temp_folder(files_dir,botlogger)
         return {
             "message":f"ChatBot {payload.chatbot_name} created successfully",
