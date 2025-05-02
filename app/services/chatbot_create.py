@@ -1,15 +1,30 @@
-from Logger.logger import logger
+from Logger import get_logger
 from app.utils_file import load_from_file
 import multiprocessing
+import logging
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
+logger = get_logger()
 def get_cpu_cores():
     return multiprocessing.cpu_count()
 
-def loading_doc(temp_dir):
-    logger.info("loading the document from the ")
-    entries = sorted(temp_dir, key=lambda e: (e.name.lower()))
+def loading_doc(temp_dir,botlogger):
+    botlogger.info("loading the document...")
+    entries = sorted([entry for entry in os.scandir(temp_dir) if entry.is_file()],
+                     key=lambda e: e.name.lower())
     doc_list = []
+    num_workers = min(2, get_cpu_cores())  # You can adjust the max
+    botlogger.info(f"Using {num_workers} threads for loading documents")
+
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = [executor.submit(load_from_file, entry, botlogger) for entry in entries]
+        for future in as_completed(futures):
+            docs = future.result()
+            if docs:
+                doc_list.extend(docs)
+
+    botlogger.info(f"Total documents loaded: {len(doc_list)}")
+    return doc_list
     # first load the docs
     # for entry in entries:
     #     if os.path.basename(entry.path) == "weblinks.json":
@@ -29,20 +44,12 @@ def loading_doc(temp_dir):
     #                 loader = WebLoader(entry.path,follow,depth)
     #                 doc = loader.load()
     #                 doc_list.append(doc)
-    num_workers = min(2, get_cpu_cores())  # You can adjust the max
-    logger.info(f"Using {num_workers} threads for loading documents")
 
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = [executor.submit(load_from_file, entry) for entry in entries]
-        for future in as_completed(futures):
-            docs = future.result()
-            if docs:
-                doc_list.extend(docs)
-
-    logger.info(f"Total documents loaded: {len(doc_list)}")
-    return doc_list
-def create_chatbot_pipeline(payload,temp_dir):
-    doc_list = loading_doc(temp_dir=temp_dir)
+def create_chatbot_pipeline(payload,temp_dir,botlogger:logging.Logger):
+    botlogger.info(f"loading all the documents from {temp_dir}")
+    doc_list = loading_doc(temp_dir=temp_dir,botlogger=botlogger)
+    botlogger.info(f"documents {len(doc_list)} are loadded now moving to pre-processing phase.")
+    return "deafult"
 
 
 

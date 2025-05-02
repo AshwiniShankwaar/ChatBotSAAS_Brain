@@ -1,8 +1,19 @@
 # created by virtualenv automatically
 ./files
+./chatBot_Logs
+./logs
+./bm25model
 ./include
 ./lib
 ./share
 ./Scripts
 .env
 pyvenv.cfg
+.idea
+__pycache__/
+# Ignore all __pycache__ directories
+__pycache__/
+**/__pycache__/
+
+# Ignore all .pyc files
+*.pyc
