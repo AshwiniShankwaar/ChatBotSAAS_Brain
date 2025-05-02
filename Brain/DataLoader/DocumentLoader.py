@@ -1,10 +1,10 @@
 import os
 from Brain.DataLoader.Loader import Loader
 from Brain.Exceptions.lodderError import lodderError
-from Logger import logger
+from Logger.logger import get_logger
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, JSONLoader, CSVLoader
-
+logger = get_logger()
 class DocumentLoader(Loader):
     """
     Loads data from a local document file.

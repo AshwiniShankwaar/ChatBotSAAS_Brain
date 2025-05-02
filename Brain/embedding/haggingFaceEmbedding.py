@@ -1,7 +1,8 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from dotenv import load_dotenv
 from langchain_core.documents import Document
-from Logger import logger
+from Logger.logger import get_logger
+logger = get_logger()
 load_dotenv()
 huggingface_model_name = "sentence-transformers/all-mpnet-base-v2"
 embedding_model = HuggingFaceEmbeddings(

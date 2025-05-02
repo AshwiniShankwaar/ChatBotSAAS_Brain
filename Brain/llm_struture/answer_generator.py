@@ -3,7 +3,9 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 import os
-os.environ["GOOGLE_API_KEY"] = "AIzaSyBRmB4cyFLIiXWOlyNvm2TpJFsTvFS_ldc"
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def get_answer(query,r_doc):
   template="""Use the following pieces of context to answer the question below.

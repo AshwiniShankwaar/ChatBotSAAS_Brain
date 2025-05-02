@@ -8,9 +8,9 @@ from pinecone import (
 )
 from langchain_core.documents import Document
 from Brain.vector_storage.pinecone_store import pinecone_db
-from Logger import logger
+from Logger.logger import get_logger
 
-
+logger = get_logger()
 class vector_store_dense(pinecone_db):
 
     def __init__(

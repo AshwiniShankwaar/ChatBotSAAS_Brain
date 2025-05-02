@@ -1,20 +1,27 @@
-from Brain.DataLoader.DocumentLoader import DocumentLoader # Import the class
+
 import os
 from dotenv import load_dotenv
-from Brain.text_splitter.char_text_splitter import char_text_splitter
-from Brain.embedding.haggingFaceEmbedding import perform_embedding_doc
-from Brain.vector_storage import vector_store_dense,vector_store_sparse
+from Brain import (
+     DocumentLoader,
+     WebLoader,
+     char_text_splitter,
+     json_text_splitter,
+     perform_embedding_doc,
+     vector_store_dense,
+     vector_store_sparse,
+     retrival_doc,
+     get_answer
+)
 from pinecone import Pinecone
-from Logger import logger
-from Brain.Retrival import retrival_doc
-from Brain.llm_struture import get_answer
+from Logger.logger import get_logger
+
 import json
 load_dotenv()
 pine_api_key = os.getenv("PINECONE_API_KEY")
 pc = Pinecone(
         api_key=pine_api_key
     )
-
+logger = get_logger()
 index_name = "rag-application-kb"
 namespace = "concepts"
 exclude = ['include', 'Lib', 'Scripts', 'share','.git','.idea']
@@ -88,36 +95,35 @@ def print_tree(path, prefix='', current_depth=0):
         print(f"{prefix}├── [Permission Denied]")
 
 if __name__ == '__main__':
-    # doc = load_doc()
-    # chunks = preprocess_doc(doc)
-    # embedded = perform_embedding(chunks)
-    # store_data(chunks,embedded)
-    # print("Ask your question")
-    # query = input()
-    # r_doc = retriver(query)
-    # ans = answer(query,r_doc)
-    # print(ans)
+    doc = load_doc()
+    chunks = preprocess_doc(doc)
+    embedded = perform_embedding(chunks)
+    store_data(chunks,embedded)
+    print("Ask your question")
+    query = input()
+    r_doc = retriver(query)
+    ans = answer(query,r_doc)
+    print(ans)
 
     # cwd_path = os.getcwd()
     # print_tree(path=cwd_path)
 
-    cwd_path = os.getcwd()
-    temp_path = f"{cwd_path}\\files"
-    entries = sorted(os.scandir(temp_path),
-                     key = lambda e: (e.name.lower()))
-    for entry in entries:
-        if not os.path.basename(entry.path) == "anscombe.json":
-            print(entry.path)
-        else:
-            with open(entry.path, "r", encoding="utf-8") as file:
-                data = json.load(file)  # This will be a list of dictionaries
-                for item in data:
-                    # Now `item` is each dictionary like {'link': ..., 'follow': ..., 'depth': ...}
-                    # link = item.get("link")
-                    # follow = item.get("follow", False)
-                    # depth = item.get("depth", 1)
-                    Series = item.get("Series")
-                    print(Series)
-
+    # cwd_path = os.getcwd()
+    # temp_path = f"{cwd_path}\\files"
+    # entries = sorted(os.scandir(temp_path),
+    #                  key = lambda e: (e.name.lower()))
+    # for entry in entries:
+    #     if not os.path.basename(entry.path) == "anscombe.json":
+    #         print(entry.path)
+    #     else:
+    #         with open(entry.path, "r", encoding="utf-8") as file:
+    #             data = json.load(file)  # This will be a list of dictionaries
+    #             for item in data:
+    #                 # Now `item` is each dictionary like {'link': ..., 'follow': ..., 'depth': ...}
+    #                 # link = item.get("link")
+    #                 # follow = item.get("follow", False)
+    #                 # depth = item.get("depth", 1)
+    #                 Series = item.get("Series")
+    #                 print(Series)
     pass
 

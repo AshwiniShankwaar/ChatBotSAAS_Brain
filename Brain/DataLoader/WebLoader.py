@@ -3,9 +3,9 @@ from langchain_core.documents import Document
 import requests
 from bs4 import BeautifulSoup
 from Brain.DataLoader.Loader import Loader
-from Logger import logger
+from Logger.logger import get_logger
 from Brain.Exceptions.lodderError import lodderError
-
+logger = get_logger()
 class WebLoader(Loader):
     """
     Loads data from a web page, and optionally follows links to load content from linked pages.

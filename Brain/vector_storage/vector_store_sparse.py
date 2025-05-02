@@ -7,10 +7,12 @@ from pinecone import (
 from langchain_core.documents import Document
 from Brain.vector_storage.pinecone_store import pinecone_db
 from rank_bm25 import BM25Okapi
-from Logger import logger
+from Logger.logger import get_logger
 
 import json
 import os
+
+logger = get_logger()
 
 class vector_store_sparse(pinecone_db):
     def __init__(

@@ -2,7 +2,9 @@ import json
 from rank_bm25 import BM25Okapi
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from pinecone import Pinecone
-from Logger import logger
+from Logger.logger import get_logger
+
+logger = get_logger()
 # Load saved BM25 model (tokenized corpus)
 def load_bm25_model(namespace: str) -> BM25Okapi:
     with open(f"bm25model/{namespace}.json", "r", encoding="utf-8") as f:
