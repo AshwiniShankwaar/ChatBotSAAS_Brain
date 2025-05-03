@@ -42,7 +42,5 @@ weblinks = payload['weblinks']
 
 
 def test_create_chatbot():
-    result = asyncio.run(create_chatbot(data, files, weblinks))
-    print(result['namespace'])
-    assert 'namespace' in result
-    pass
+    res = asyncio.run(create_chatbot(data, files, weblinks))
+    print(res['namespace'])
