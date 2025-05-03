@@ -14,7 +14,7 @@ from Brain import (
 )
 from pinecone import Pinecone
 from Logger.logger import get_logger
-
+from embeddedModel.huggingfaceModel import embedding_model
 import json
 load_dotenv()
 pine_api_key = os.getenv("PINECONE_API_KEY")
@@ -46,7 +46,7 @@ def preprocess_doc(doc):
     return chunks
 
 def perform_embedding(chunks):
-    embedded_doc = perform_embedding_doc(chunks)
+    embedded_doc = perform_embedding_doc(chunks,embedding_model)
     print(f"embedded performed {len(embedded_doc)}, dimentions {len(embedded_doc[0])}")
     return embedded_doc
 
@@ -72,11 +72,14 @@ def store_data(chunks,embedded_doc):
     logger.info("sparse data stored")
 
 def retriver(query:str):
-    res = retrival_doc(index_name, pc, query, 5, namespace)
+    res = retrival_doc(embedded_model=embedding_model,
+                       index=index_name, pc=pc,
+                       query=query, top_k=5,
+                       namespace=namespace)
     return res
 
 def answer(query:str,res)->str:
-    answer = get_answer(query,res)
+    answer = get_answer(query,res,"assistance")
     return answer
 
 def print_tree(path, prefix='', current_depth=0):
@@ -96,8 +99,11 @@ def print_tree(path, prefix='', current_depth=0):
 
 if __name__ == '__main__':
     doc = load_doc()
+    print(len(doc))
     chunks = preprocess_doc(doc)
+    print(len(chunks))
     embedded = perform_embedding(chunks)
+    print(len(embedded),len(embedded[0]))
     store_data(chunks,embedded)
     print("Ask your question")
     query = input()

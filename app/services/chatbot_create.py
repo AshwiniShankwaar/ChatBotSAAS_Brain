@@ -5,19 +5,18 @@ from Brain import perform_embedding_doc,vector_store_dense,vector_store_sparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from langchain_core.documents import Document
 from dotenv import load_dotenv
-from pinecone import Pinecone
+from app.Main import pc
 import os
 import time
 import multiprocessing
 import logging
 
 load_dotenv()
-
-pine_api_key = os.getenv("PINECONE_API_KEY")
-pc = Pinecone(
-        api_key=pine_api_key
-    )
+index_name = os.getenv("INDEX_NAME")
+chunk_size = os.getenv("CHUNK_SIZE")
+chunk_overlap = os.getenv("CHUNK_OVERLAPING")
 logger = get_logger()
+worker = os.getenv("MAX_WORKERS")
 def get_cpu_cores():
     return multiprocessing.cpu_count()
 
@@ -26,7 +25,7 @@ def loading_doc(temp_dir,botlogger):
     entries = sorted([entry for entry in os.scandir(temp_dir) if entry.is_file()],
                      key=lambda e: e.name.lower())
     doc_list = []
-    num_workers = min(8, get_cpu_cores())  # You can adjust the max
+    num_workers = min(worker, get_cpu_cores())  # You can adjust the max
     botlogger.info(f"Using {num_workers} threads for loading documents")
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -41,7 +40,7 @@ def loading_doc(temp_dir,botlogger):
 
 def preform_preprocessing(doc_list,botlogger)->list[Document]:
     botlogger.info(f"pre-processing phase begin... no of documents: {len(doc_list)}")
-    splitter = char_text_splitter(doc_list,2000,200)
+    splitter = char_text_splitter(doc_list,chunk_size=chunk_size,chunk_overlap=chunk_overlap)
     chunks = splitter.processDocumnet()
     return chunks
     pass
@@ -78,7 +77,6 @@ def create_chatbot_task(payload, temp_dir,botlogger:logging.Logger,embedded_mode
         # phase: store in pinecone
         #  Add your Pinecone storage logic here, using payload.chatbot_id to create a unique namespace
         namespace = f"{payload.client_id}_{payload.chatbot_id}"  # Or generate a namespace as needed.
-        index_name = "rag-application-kb"
         botlogger.info(f"embedded len: {len(embeddings)} dimentions: {len(embeddings[0])}")
         dense_store = vector_store_dense(
             pc=pc,

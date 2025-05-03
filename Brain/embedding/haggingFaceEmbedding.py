@@ -1,4 +1,5 @@
 import logging
+import os
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from dotenv import load_dotenv
@@ -16,8 +17,8 @@ def batch_task(chunks:list[Document],
 def perform_embedding_doc(
         chunks:list[Document],
         embedding_model:HuggingFaceEmbeddings,
-        batch_size:int = 64,
-        max_worker:int=4
+        batch_size:int = int(os.getenv("BATCH_SIZE")),
+        max_worker:int = int(os.getenv("MAX_WORKERS_BATCH"))
 )->list[list[float]]:
     try:
         batchs = [chunks[i:i+batch_size] for i in range(0,len(chunks),batch_size)]

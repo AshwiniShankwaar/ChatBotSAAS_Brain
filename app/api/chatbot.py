@@ -4,7 +4,7 @@ from app.services.chatbot_create import create_chatbot_task
 from Logger import get_logger,getlogger
 from typing import Optional
 from app.utils_file import save_data,clean_temp_folder
-from embeddedModel.huggingfaceModel import embedding_model
+from app.Main import model
 logger = get_logger()
 router = APIRouter()
 
@@ -22,7 +22,7 @@ async def create_chatbot(
     files_dir = save_data(payload.client_id,payload.chatbot_id,files,weblinks,botlogger)
 
     try:
-        result = create_chatbot_task(payload,files_dir,botlogger,embedding_model)
+        result = create_chatbot_task(payload,files_dir,botlogger,model)
         botlogger.info(f"chatbot {payload.chatbot_name}"
                     f" of client {payload.client_id}"
                     f" is created and the namespace is"

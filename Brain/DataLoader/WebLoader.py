@@ -88,7 +88,7 @@ class WebLoader(Loader):
 
     def load(self) -> list[Document]:
         logger.info(f"Starting to load from root URL: {self._url}")
-        documents = self._load_page(self._url, 1)
+        documents = self._load_page(self._url, self._max_depth)
         logger.info(f"Total documents loaded from web: {len(documents)}")
         return documents
 

@@ -1,5 +1,9 @@
+import os
+
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
-huggingface_model_name = "sentence-transformers/all-mpnet-base-v2"
+from dotenv import load_dotenv
+load_dotenv()
+huggingface_model_name = os.getenv("EMBEDDED_MODEL")
 embedding_model = HuggingFaceEmbeddings(
     model_name=huggingface_model_name
 )

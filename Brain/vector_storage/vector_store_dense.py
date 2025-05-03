@@ -9,7 +9,7 @@ from pinecone import (
 from langchain_core.documents import Document
 from Brain.vector_storage.pinecone_store import pinecone_db
 from Logger.logger import get_logger
-
+import os
 logger = get_logger()
 class vector_store_dense(pinecone_db):
 
@@ -19,7 +19,7 @@ class vector_store_dense(pinecone_db):
             index_name: str,
             chunk_text: list[Document],
             embedded: list[list[float]],
-            namespace: str
+            namespace: str = os.getenv("RETRIVAL_NAMESPACE_DEFAULT")
     ):
         self._pc = pc
         self._index_name = f"{index_name}-dense"

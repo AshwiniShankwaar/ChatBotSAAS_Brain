@@ -1,8 +1,12 @@
 import json
+import os
+
 from rank_bm25 import BM25Okapi
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from pinecone import Pinecone
 from Logger.logger import get_logger
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = get_logger()
 # Load saved BM25 model (tokenized corpus)
@@ -30,19 +34,17 @@ def generate_sparse_vector(text: str, bm25_model: BM25Okapi):
 
 # Hybrid Retrieval Function
 def retrival_doc(
+        embedded_model:HuggingFaceEmbeddings,
         index:str,
         pc: Pinecone,
         query: str,
-        top_k: int = 5,
-        namespace: str = "default"):
+        top_k: int = int(os.getenv("RETRIVAL_TOP_K")),
+        namespace: str = os.getenv("RETRIVAL_NAMESPACE_DEFAULT")
+):
     index_d = pc.Index(name=f"{index}-dense")
     index_s = pc.Index(name=f"{index}-sparse")
     # Load dense embedding model
-    huggingface_model_name = "sentence-transformers/all-mpnet-base-v2"
-    embedded_model = HuggingFaceEmbeddings(
-        model_name=huggingface_model_name,
-        model_kwargs={"device": "cpu"}
-    )
+
     query_embedded = embedded_model.embed_documents([query])[0]
     logger.info("query embedded is generated")
     # Load saved BM25 model

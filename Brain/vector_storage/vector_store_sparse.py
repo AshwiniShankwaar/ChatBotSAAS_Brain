@@ -20,7 +20,7 @@ class vector_store_sparse(pinecone_db):
             pc: Pinecone,
             index_name: str,
             chunks: list[Document],
-            namespace: str = "default"
+            namespace: str = os.getenv("RETRIVAL_NAMESPACE_DEFAULT")
     ):
         self.pc = pc
         self.index_name = f"{index_name}-sparse"

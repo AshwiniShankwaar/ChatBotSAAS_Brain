@@ -6,4 +6,4 @@ class QueryRequest(BaseModel):
     past_msg: List[Dict[str, str]]  # Format: [{"user": "..."}, {"ai": "..."}]
     client_id: str
     chatbot_id: str
-    chatbot_config: Optional[Dict[str, str]] = {}  # ex: {"temp": 0.7, "agent_role": "financial analyst"}
+    agent_role: Optional[str]
