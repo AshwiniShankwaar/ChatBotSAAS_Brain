@@ -6,7 +6,7 @@ from Logger.logger import get_logger
 
 logger = get_logger()
 
-BASE_LOG_DIR = os.path.abspath(os.path.join(os.getcwd(), "..", "chatBot_Logs"))
+BASE_LOG_DIR = os.path.abspath(os.path.join(os.getcwd(), "chatBot_Logs"))
 
 def create_chatbot_log_dir(chatbot_id: str):
     chatbot_log_path = os.path.join(BASE_LOG_DIR, chatbot_id)
