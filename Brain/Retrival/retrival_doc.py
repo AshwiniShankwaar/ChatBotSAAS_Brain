@@ -1,6 +1,6 @@
 import json
 import os
-
+import re
 from rank_bm25 import BM25Okapi
 from langchain_huggingface.embeddings import HuggingFaceEmbeddings
 from pinecone import Pinecone
@@ -9,17 +9,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = get_logger()
+project_root = os.path.dirname(os.path.abspath(__file__))  # current file's dir
+root_dir = os.path.abspath(os.path.join(project_root, "../../"))
+bash_dir = os.path.join(root_dir,"bm25model")
 # Load saved BM25 model (tokenized corpus)
 def load_bm25_model(namespace: str) -> BM25Okapi:
-    with open(f"bm25model/{namespace}.json", "r", encoding="utf-8") as f:
+    with open(f"{bash_dir}/{namespace}.json", "r", encoding="utf-8") as f:
         tokenized_corpus = json.load(f)
     logger.info(f"bm25 model is loaded for chatbot: {namespace}")
     return BM25Okapi(tokenized_corpus)
 
+def simple_tokenize(text: str) -> list[str]:
+    # Lowercase, remove punctuation, and split on word boundaries
+    return re.findall(r"\b\w+\b", text.lower())
 # Generate sparse vector using loaded BM25
 def generate_sparse_vector(text: str, bm25_model: BM25Okapi):
-    tokenized_query = text.split(" ")
+    tokenized_query = simple_tokenize(text)
     scores = bm25_model.get_scores(tokenized_query)
+    # logger.info(f"score is {scores}")
     scores = [float(s) for s in scores]
 
     sparse = {
@@ -30,6 +37,8 @@ def generate_sparse_vector(text: str, bm25_model: BM25Okapi):
         if score > 0:
             sparse["indices"].append(int(idx))
             sparse["values"].append(score)
+            # logger.info(f"{idx} score: {score}")
+
     return sparse
 
 # Hybrid Retrieval Function
@@ -38,15 +47,17 @@ def retrival_doc(
         index:str,
         pc: Pinecone,
         query: str,
-        top_k: int = int(os.getenv("RETRIVAL_TOP_K")),
+        top_k: int = 5,
         namespace: str = os.getenv("RETRIVAL_NAMESPACE_DEFAULT")
 ):
     index_d = pc.Index(name=f"{index}-dense")
+    # logger.info(f"{index}-dense is present" )
     index_s = pc.Index(name=f"{index}-sparse")
+    # logger.info(f"{index}-sparse is present")
     # Load dense embedding model
 
     query_embedded = embedded_model.embed_documents([query])[0]
-    logger.info("query embedded is generated")
+    logger.info(f"query embedded is generated len: {len(query_embedded)}")
     # Load saved BM25 model
     bm25 = load_bm25_model(namespace)
     sparse_vector = generate_sparse_vector(query, bm25)

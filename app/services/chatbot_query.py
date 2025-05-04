@@ -22,7 +22,7 @@ def process_query(payload:QueryRequest,
         index = os.getenv("INDEX_NAME"),
         pc = pc,
         query = payload.query,
-        top_k = os.getenv("RETRIVAL_TOP_K"),
+        top_k = 5,
         namespace=namespace
     )
     botlogger.info("document retrived now passing to the llm for generating output..")

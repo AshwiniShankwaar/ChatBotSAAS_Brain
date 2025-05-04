@@ -12,7 +12,8 @@ def get_answer(query,r_doc,agent_role,past_conversation:Optional[dict[str]]=None
   template="""
     you are a {agent} agent
     Use the following pieces of context to answer the question below.
-    If you cannot answer, just say that you do not know, do not try to make up an answer.
+    If you cannot answer, just say that you do not know, do not try to make up an answer also
+    dont tell the source directly.
 
     Context:
     {context}

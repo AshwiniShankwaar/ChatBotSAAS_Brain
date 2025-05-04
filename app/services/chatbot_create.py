@@ -5,7 +5,6 @@ from Brain import perform_embedding_doc,vector_store_dense,vector_store_sparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from langchain_core.documents import Document
 from dotenv import load_dotenv
-from app.Main import pc
 import os
 import time
 import multiprocessing
@@ -13,10 +12,15 @@ import logging
 
 load_dotenv()
 index_name = os.getenv("INDEX_NAME")
-chunk_size = os.getenv("CHUNK_SIZE")
-chunk_overlap = os.getenv("CHUNK_OVERLAPING")
+chunk_size = int(os.getenv("CHUNK_SIZE"))
+chunk_overlap = int(os.getenv("CHUNK_OVERLAPING"))
 logger = get_logger()
-worker = os.getenv("MAX_WORKERS")
+worker = int(os.getenv("MAX_WORKERS"))
+
+from pinecone import Pinecone
+pine_api_key = os.getenv("PINECONE_API_KEY")
+pc = Pinecone(api_key=pine_api_key)
+
 def get_cpu_cores():
     return multiprocessing.cpu_count()
 
@@ -61,7 +65,7 @@ def create_chatbot_task(payload, temp_dir,botlogger:logging.Logger,embedded_mode
 
         # phase: pre-processing
         start_preprocess = time.time()
-        chunks = preform_preprocessing(doc_list=doc_list, botlogger=botlogger)[0:100]
+        chunks = preform_preprocessing(doc_list=doc_list, botlogger=botlogger)
         end_preprocessing = time.time()
         botlogger.info(
             f"chunks created, chunks size: {len(chunks)}, time taken: {end_preprocessing - start_preprocess}"

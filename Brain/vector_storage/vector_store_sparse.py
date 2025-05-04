@@ -14,6 +14,12 @@ import os
 
 logger = get_logger()
 
+import re
+
+def simple_tokenize(text: str) -> list[str]:
+    # Lowercase, remove punctuation, and split on word boundaries
+    return re.findall(r"\b\w+\b", text.lower())
+
 class vector_store_sparse(pinecone_db):
     def __init__(
             self,
@@ -26,7 +32,7 @@ class vector_store_sparse(pinecone_db):
         self.index_name = f"{index_name}-sparse"
         self.chunks = chunks
         self.namespace = namespace
-        self.tokenized_corpus = [doc.page_content.split(" ") for doc in chunks]
+        self.tokenized_corpus = [simple_tokenize(doc.page_content) for doc in chunks]
         self.bm25 = BM25Okapi(self.tokenized_corpus)
         self.index = self.create_index()
 
@@ -44,7 +50,7 @@ class vector_store_sparse(pinecone_db):
         return self.pc.Index(name=self.index_name)
 
     def generate_sparse_vector(self, text: str):
-        tokenized_query = text.split(" ")
+        tokenized_query = simple_tokenize(text)
         scores = self.bm25.get_scores(tokenized_query)
         sparse = {
             "indices": [],

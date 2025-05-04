@@ -25,9 +25,6 @@ def create_fake_upload_file_from_path(file_path: str) -> UploadFile:
 files = [
         create_fake_upload_file_from_path("C:\\Users\\ashwi\\Downloads\\concepts.pdf"),
         create_fake_upload_file_from_path("C:\\Users\\ashwi\\Downloads\\developers-guide.pdf"),
-        create_fake_upload_file_from_path("C:\\Users\\ashwi\\Downloads\\plsqlLearning.txt"),
-        create_fake_upload_file_from_path("C:\\Users\\ashwi\\Downloads\\json_schema.json"),
-        create_fake_upload_file_from_path("C:\\Users\\ashwi\\Desktop\\projects\\angleApiTrading\\data\\bse_20241201TO20241224.csv")
     ]
 
 data = ChatbotCreateRequest(

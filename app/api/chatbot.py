@@ -2,18 +2,31 @@ from fastapi import APIRouter,UploadFile,File,HTTPException,Form
 from app.schemas.chatbot import ChatbotCreateRequest
 from app.services.chatbot_create import create_chatbot_task
 from Logger import get_logger,getlogger
-from typing import Optional
+from typing import Optional,List,Dict,Any
 from app.utils_file import save_data,clean_temp_folder
-from app.Main import model
+import json
 logger = get_logger()
 router = APIRouter()
 
+from embeddedModel.huggingfaceModel import embedding_model as model
+
 #if there is error log in app logger else chatbot related logs should be in chatbot related log files
-# @router.post("/create_chatbot")
+@router.post("/create_chatbot")
 async def create_chatbot(
-                         payload:ChatbotCreateRequest,
+                         payload_data:str=Form(...),
                          files:Optional[list[UploadFile]]=File(default=[]),
-                         weblinks:Optional[list[dict[str]]]=None):
+                         weblinks_str: Optional[str] = Form(default=None)):
+    try:
+        # Parse the payload string into a ChatbotCreateRequest object
+        chatbot_request = json.loads(payload_data)
+        payload = ChatbotCreateRequest(**chatbot_request)
+        weblinks: Optional[List[Dict[str, Any]]] = json.loads(weblinks_str) if weblinks_str else []
+    except json.JSONDecodeError as e:
+        logger.error(f"Error decoding payload: {e}")
+        raise HTTPException(status_code=400, detail="Invalid JSON in payload")
+    except Exception as e:
+        logger.error(f"Error processing payload: {e}")
+        raise HTTPException(status_code=400, detail=f"Error processing payload: {e}")
     #request recived
     logger.info(f"creating chatbot {payload.chatbot_name}, chatbot id: {payload.chatbot_id}")
     botlogger = getlogger(payload.chatbot_id)
