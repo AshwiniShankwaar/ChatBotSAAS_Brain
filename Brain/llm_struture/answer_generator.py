@@ -5,14 +5,18 @@ from langchain_core.output_parsers import StrOutputParser
 import os
 from dotenv import load_dotenv
 from typing import Optional
+from Logger import get_logger
+logger = get_logger()
 load_dotenv()
 
 
 def get_answer(query,r_doc,agent_role,past_conversation:Optional[dict[str]]=None):
+  # logger.info("from line 14 of answer_generated ")
+  # logger.info(r_doc)
   template="""
     you are a {agent} agent
     Use the following pieces of context to answer the question below.
-    If you cannot answer, just say that you do not know, do not try to make up an answer also
+    If you cannot answer, just say that you do not know , do not try to make up an answer also
     dont tell the source directly.
 
     Context:

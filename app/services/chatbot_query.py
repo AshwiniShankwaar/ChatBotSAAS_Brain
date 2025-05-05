@@ -17,7 +17,7 @@ def process_query(payload:QueryRequest,
     #phase: retriving the document based on query
     botlogger.info(f"retriving docs based on query {payload.query}")
     namespace = f"{payload.client_id}_{payload.chatbot_id}"
-    retrived_doc = retrival_doc(
+    retrieved_docs = retrival_doc(
         embedded_model=model,
         index = os.getenv("INDEX_NAME"),
         pc = pc,
@@ -25,7 +25,13 @@ def process_query(payload:QueryRequest,
         top_k = 5,
         namespace=namespace
     )
+    # botlogger.info(f"{retrived_doc}")
     botlogger.info("document retrived now passing to the llm for generating output..")
-    answer = get_answer(payload.query,payload.past_msg,retrived_doc,payload.agent_role)
+    if not retrieved_docs:
+        fallback_context = "No relevant information was found for this query."
+    else:
+        fallback_context = retrieved_docs
+    # botlogger.info(fallback_context)
+    answer = get_answer(payload.query,fallback_context,payload.agent_role,payload.past_msg)
     botlogger.info("answer recived from llm...")
     return answer

@@ -77,15 +77,24 @@ def retrival_doc(
         namespace=namespace
     )
     logger.info(f"dense search result is fetched for query {query}")
-    return merge_results(results_d, results_s)
+    if not results_d['matches'] and not results_s['matches']:
+        logger.info("No results found in both sparse and dense vectors.")
+        return None  # Nothing found
+    return merge_results(results_d, results_s,top_k=top_k)
 
 # Merge sparse + dense results
-def merge_results(dense_results, sparse_results):
-    all_hits = dense_results['matches'] + sparse_results['matches']
+def merge_results(dense_results, sparse_results, top_k=5):
+    dense_top = sorted(dense_results['matches'], key=lambda x: x['score'], reverse=True)[:top_k]
+    sparse_top = sorted(sparse_results['matches'], key=lambda x: x['score'], reverse=True)[:top_k]
+
+    # Merge with deduplication – keep highest score if ID overlaps
     deduped = {}
-    for hit in all_hits:
+    for hit in dense_top + sparse_top:
         if hit['id'] not in deduped or hit['score'] > deduped[hit['id']]['score']:
             deduped[hit['id']] = hit
-    s = sorted(deduped.values(), key=lambda x: x['score'], reverse=True)
-    logger.info(f"Dense and sparse, both retrival result is merged")
-    return s
+
+    final_hits = sorted(deduped.values(), key=lambda x: x['score'], reverse=True)[:top_k]
+
+    logger.info(f"Top results from dense and sparse merged. Final count: {len(final_hits)}")
+    return final_hits
+

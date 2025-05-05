@@ -14,13 +14,16 @@ from embeddedModel.huggingfaceModel import embedding_model as model
 @router.post("/create_chatbot")
 async def create_chatbot(
                          payload_data:str=Form(...),
-                         files:Optional[list[UploadFile]]=File(default=[]),
+                         files:Optional[list[UploadFile]]=File(default_factory=list),
                          weblinks_str: Optional[str] = Form(default=None)):
     try:
         # Parse the payload string into a ChatbotCreateRequest object
         chatbot_request = json.loads(payload_data)
         payload = ChatbotCreateRequest(**chatbot_request)
+        logger.info(payload)
+        logger.info(weblinks_str)
         weblinks: Optional[List[Dict[str, Any]]] = json.loads(weblinks_str) if weblinks_str else []
+        logger.info(weblinks)
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding payload: {e}")
         raise HTTPException(status_code=400, detail="Invalid JSON in payload")
