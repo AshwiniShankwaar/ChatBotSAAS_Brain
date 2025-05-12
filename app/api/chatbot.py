@@ -1,6 +1,7 @@
 from fastapi import APIRouter,UploadFile,File,HTTPException,Form
 from app.schemas.chatbot import ChatbotCreateRequest
-from app.services.chatbot_create import create_chatbot_task
+from app.schemas.updateChatbot import ChatbotUpdateRequest
+from app.services.chatbot_create import create_chatbot_task,update_chatbot_task
 from Logger import get_logger,getlogger
 from typing import Optional,List,Dict,Any
 from app.utils_file import save_data,clean_temp_folder
@@ -32,9 +33,11 @@ async def create_chatbot(
         raise HTTPException(status_code=400, detail=f"Error processing payload: {e}")
     #request recived
     logger.info(f"creating chatbot {payload.chatbot_name}, chatbot id: {payload.chatbot_id}")
-    botlogger = getlogger(payload.chatbot_id)
+    botlogger = getlogger(f"{payload.client_id}_{payload.chatbot_id}")
     #first upload the files in the temp_dir for client's chatbot
     botlogger.info(f"saving files in temp_dir for chatbot id:{payload.chatbot_id} of client: {payload.client_id}")
+    # delete the folder if it is there and also remove the bm25model and also the namespace
+
     files_dir = save_data(payload.client_id,payload.chatbot_id,files,weblinks,botlogger)
 
     try:
@@ -46,6 +49,49 @@ async def create_chatbot(
         clean_temp_folder(files_dir,botlogger)
         return {
             "message":f"ChatBot {payload.chatbot_name} created successfully",
+            "namespace":result
+        }
+    except Exception as ex:
+        logger.error(f"Http exception is occured check at create_chatbot.py file {ex}")
+        # raise HTTPException(status_code=500,detail=str(ex))
+
+
+@router.post("/update_chatbot")
+async def update_chatbot(
+                         payload:str=Form(...),
+                         files:Optional[list[UploadFile]]=File(default_factory=list),
+                         weblinks: Optional[str] = Form(default=None)):
+    try:
+        # Parse the payload string into a ChatbotCreateRequest object
+        chatbot_request = json.loads(payload)
+        payload = ChatbotUpdateRequest(**chatbot_request)
+        logger.info(payload)
+        logger.info(weblinks)
+        weblinks: Optional[List[Dict[str, Any]]] = json.loads(weblinks) if weblinks else []
+        logger.info(weblinks)
+    except json.JSONDecodeError as e:
+        logger.error(f"Error decoding payload: {e}")
+        raise HTTPException(status_code=400, detail="Invalid JSON in payload")
+    except Exception as e:
+        logger.error(f"Error processing payload: {e}")
+        raise HTTPException(status_code=400, detail=f"Error processing payload: {e}")
+    #request recived
+    logger.info(f"creating chatbot {payload.chatbot_name}, chatbot id: {payload.chatbot_id}")
+    botlogger = getlogger(f"{payload.client_id}_{payload.chatbot_id}")
+    #first upload the files in the temp_dir for client's chatbot
+
+    botlogger.info(f"saving files in temp_dir for chatbot id:{payload.chatbot_id} of client: {payload.client_id}")
+    files_dir = save_data(payload.client_id,payload.chatbot_id,files,weblinks,botlogger)
+
+    try:
+        result = update_chatbot_task(payload,files_dir,botlogger,model)
+        botlogger.info(f"chatbot {payload.chatbot_name}"
+                    f" of client {payload.client_id}"
+                    f" is created and the namespace is"
+                    f" {result}")
+        clean_temp_folder(files_dir,botlogger)
+        return {
+            "message":f"ChatBot {payload.chatbot_name} updated successfully",
             "namespace":result
         }
     except Exception as ex:

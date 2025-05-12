@@ -20,8 +20,8 @@ argu:
 
 ```
 { 
-  "client_id": "test_client", 
-  "chatbot_id": "test_bot", 
+  "client_id": 10000, 
+  "chatbot_id": 100000, 
   "chatbot_name": "TestBot", 
   "chatbot_description": "Test chatbot", 
   "agent_role": "helper", 
@@ -98,3 +98,40 @@ where past_msg is the list of dist(str,str)
 ```
 
 3) ```/health```
+4) ```/update_chatbot```
+this endpoint will allow to update the knowledge base of a chatbot
+parms:
+
+       -> payload
+       -> list of files 
+       -> weblinks
+
+  **payload** :
+  this takes a json object as a string form example.
+  ```
+  { 
+  "client_id": 10000, 
+  "chatbot_id": 100000, 
+  "chatbot_name": "TestBot", 
+  "chatbot_description": "Test chatbot", 
+  "agent_role": "helper", 
+  "temprature": 0.5,
+  "namespace": "10000_100000"
+}
+```
+**weblinks**:
+this will take string of json object
+```
+[
+  {
+    "link": "https://python.langchain.com/docs/introduction/", 
+    "follow": true, 
+    "depth": 2
+  },
+  {
+    "link": "https://langchain-ai.github.io/langgraph/tutorials/introduction/", 
+    "follow": true, 
+    "depth": 1
+  }
+]
+```
