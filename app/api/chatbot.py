@@ -1,7 +1,7 @@
 from fastapi import APIRouter,UploadFile,File,HTTPException,Form
 from app.schemas.chatbot import ChatbotCreateRequest
 from app.schemas.updateChatbot import ChatbotUpdateRequest
-from app.services.chatbot_create import create_chatbot_task,update_chatbot_task
+from app.services.chatbot_create import create_chatbot_task,update_chatbot_task,deleteChatBotData
 from Logger import get_logger,getlogger
 from typing import Optional,List,Dict,Any
 from app.utils_file import save_data,clean_temp_folder
@@ -97,3 +97,18 @@ async def update_chatbot(
     except Exception as ex:
         logger.error(f"Http exception is occured check at create_chatbot.py file {ex}")
         # raise HTTPException(status_code=500,detail=str(ex))
+
+@router.delete("/delete_chatbot")
+async def delete_chatbot(request: ChatbotUpdateRequest):
+    try:
+        # Simulate delete logic (e.g., remove vector DB entries, files, etc.)
+        logger.info(f"Deleting chatbot: {request.chatbot_id} from namespace {request.namespace}")
+
+        # TODO: Actual deletion logic goes here
+        deleteChatBotData(namespace=request.namespace)
+        return JSONResponse(
+            status_code=200,
+            content={"message": f"Chatbot {request.chatbot_id} deleted successfully"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting chatbot: {str(e)}")

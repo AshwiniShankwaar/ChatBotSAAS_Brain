@@ -188,9 +188,10 @@ def delete_namespace_bm25Model(
 
     index = pc.Index(name=index_dense)
     index.delete(delete_all=True,namespace=namespace)
-
+    logger.info("dense index is deleted")
     index = pc.Index(name=index_sparse)
     index.delete(delete_all=True,namespace=namespace)
+    logger.info("sparse index is deleted")
 
     try:
         bm25_model_path = get_bm25_model_path(namespace)
@@ -206,3 +207,6 @@ def get_bm25_model_path(namespace:str) -> str:
     root_dir = os.path.abspath(os.path.join(project_root, "../../"))
     bm25_dir = os.path.join(root_dir, "bm25model")
     return os.path.join(bm25_dir, f"{namespace}.json")
+
+def deleteChatBotData(namespace:str):
+    delete_namespace_bm25Model(pc=pc,index_name=index_name,namespace=namespace)
