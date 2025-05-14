@@ -76,8 +76,9 @@ args:
         "agent_role":"helper",
         
 }
-
+```
 - with previous chat
+```
 {
     "query": "What is transformer",
     "past_msg": [
