@@ -97,7 +97,25 @@ where past_msg is the list of dist(str,str)
     {'ai':'...'}
 ]
 ```
+response form this endpoint will in the following form
+```
+{
+  "response": "response_ouutput from the llm",
+  "metadata": [
+    {
+      "client_id": 10000,
+      "chatbot_id": 100000,
+      "input_tokens": 4197,
+      "output_tokens": 85,
+      "total_tokens": 4282
+    }
+  ]
+}
 
+```
+in meta data i have provided the input token which is the token of query and context send to llm 
+for the prompt_template token for that i have subtracted 80.
+I have provide the output_tokens which count the token send as a response
 3) ```/health```
 4) ```/update_chatbot```
 this endpoint will allow to update the knowledge base of a chatbot
