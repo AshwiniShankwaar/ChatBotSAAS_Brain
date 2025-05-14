@@ -38,11 +38,23 @@ def get_answer(query,r_doc,agent_role,past_conversation:Optional[dict[str]]=None
       max_retries = 5
   )
 
-  chain = promt | llm | output_parser
+  chain = promt | llm
+  #{'input_tokens': 80, 'output_tokens': 41, 'total_tokens': 121, 'input_token_details': {'cache_read': 0}}
   answer = chain.invoke({
       "agent":agent_role,
       "context":r_doc,
       "past_chat":past_conversation,
       "question":query
   })
-  return answer
+  logger.info(answer.usage_metadata)
+  #here the 80 represent the token that is get as a static prompt and added to the query and
+  # create a prompt to generate a anser
+  input_tokens = max(0, answer.usage_metadata['input_tokens'] - 80)
+  output_tokens = answer.usage_metadata['output_tokens']
+  usages_data={
+      "input_tokens": input_tokens,
+      "output_tokens": output_tokens,
+      "total_tokens": input_tokens+output_tokens
+  }
+  answer = output_parser.invoke(answer.content)
+  return answer,usages_data

@@ -70,22 +70,23 @@ args:
 ```
 {
         "query":"What is uim",
-        "past_msg":null,
-        "client_id":"test_client",
-        "chatbot_id":"test_bot",
-        "agent_role":"helper"
+        "past_msg":[],
+        "client_id":"10000",
+        "chatbot_id":"100000",
+        "agent_role":"helper",
+        
 }
 
 - with previous chat
 {
-    "query": "What is uim",
+    "query": "What is transformer",
     "past_msg": [
         {"user": "Hi"},
         {"ai": "Hi, there"}
     ],
-    "client_id": "test_client",
-    "chatbot_id": "test_bot",
-    "agent_role": "helper"
+    "client_id":"10000",
+    "chatbot_id":"100000",
+    "agent_role":"helper"
 }
 
 ```

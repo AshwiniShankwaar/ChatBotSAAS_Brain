@@ -32,6 +32,6 @@ def process_query(payload:QueryRequest,
     else:
         fallback_context = retrieved_docs
     # botlogger.info(fallback_context)
-    answer = get_answer(payload.query,fallback_context,payload.agent_role,payload.past_msg)
+    answer,usages_data = get_answer(payload.query,fallback_context,payload.agent_role,payload.past_msg)
     botlogger.info("answer recived from llm...")
-    return answer
+    return answer,usages_data

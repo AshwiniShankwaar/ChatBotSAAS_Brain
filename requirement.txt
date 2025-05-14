@@ -21,3 +21,4 @@ uvicorn[standard]
 python-multipart
 Celery[pytest]
 requests
+langsmith
