@@ -117,6 +117,7 @@ response form this endpoint will in the following form
 in meta data i have provided the input token which is the token of query and context send to llm 
 for the prompt_template token for that i have subtracted 80.
 I have provide the output_tokens which count the token send as a response
+
 3) ```/health```
 4) ```/update_chatbot```
 this endpoint will allow to update the knowledge base of a chatbot
